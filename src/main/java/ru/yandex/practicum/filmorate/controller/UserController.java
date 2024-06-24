@@ -40,7 +40,7 @@ public class UserController {
      */
     @GetMapping
     public Collection<User> findAll() {
-        log.debug("findAll. users = " + users);
+        log.info("findAll. users = " + users);
         return users.values();
     }
 
@@ -53,13 +53,10 @@ public class UserController {
     public User create(@Valid @RequestBody User newUser) {
         isLoginUsed(newUser.getLogin(), 0);
 
-        if (newUser.getName() == null || newUser.getName().isBlank()) {
-            log.debug("User create. Filling empty name by login.");
-            newUser.setName(newUser.getLogin());
-        }
+        fillEmptyName(newUser, "create");
 
         newUser.setId(getNextId());
-        log.debug("User create. newUser = " + newUser);
+        log.info("User create. newUser = " + newUser);
         users.put(newUser.getId(), newUser);
         return newUser;
     }
@@ -81,10 +78,7 @@ public class UserController {
             User oldUser = users.get(user.getId());
 
             oldUser.setLogin(user.getLogin());
-            if (user.getName() == null || user.getName().isBlank()) {
-                log.debug("User update. Filling empty name by login.");
-                user.setName(user.getLogin());
-            }
+            fillEmptyName(user, "update");
             oldUser.setEmail(user.getEmail());
             oldUser.setName(user.getName());
             oldUser.setBirthday(user.getBirthday());
@@ -125,6 +119,18 @@ public class UserController {
                 log.error("isLoginUsed. Login \"" + loginToFind + "\" is already used. excludeId = " + excludeId);
                 throw new ValidationException("Этот логин уже используется.");
             }
+        }
+    }
+
+    /**
+     * Метод заполнения пустого имени пользователя логином.
+     * @param user проверяемый пользователь
+     * @param actionName имя операции для записи в лог
+     */
+    private void fillEmptyName(User user, String actionName) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            log.debug("User " + actionName + " . Filling empty name by login.");
+            user.setName(user.getLogin());
         }
     }
 }

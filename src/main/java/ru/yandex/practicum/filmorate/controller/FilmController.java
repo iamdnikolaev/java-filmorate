@@ -45,7 +45,7 @@ public class FilmController {
      */
     @GetMapping
     public Collection<Film> findAll() {
-        log.debug("findAll. films = " + films);
+        log.info("findAll. films = " + films);
         return films.values();
     }
 
@@ -56,14 +56,11 @@ public class FilmController {
      */
     @PostMapping
     public Film create(@Valid @RequestBody Film newFilm) {
-        if (newFilm.getReleaseDate().isBefore(DATE_OF_CINEMA)) {
-            log.error("Film create. Wrong release date. newFilm = " + newFilm);
-            throw new ValidationException("Дата релиза не может быть ранее " + DATE_OF_CINEMA);
-        }
+        isReleaseDateTooOld(newFilm, "create");
         isFilmExists(newFilm.getName(), newFilm.getReleaseDate(), 0L);
 
         newFilm.setId(getNextId());
-        log.debug("Film create. newFilm = " + newFilm);
+        log.info("Film create. newFilm = " + newFilm);
         films.put(newFilm.getId(), newFilm);
         return newFilm;
     }
@@ -79,10 +76,7 @@ public class FilmController {
             log.error("Film update. Wrong id, film = " + film);
             throw new ValidationException("Id должен быть указан.");
         }
-        if (film.getReleaseDate().isBefore(DATE_OF_CINEMA)) {
-            log.error("Film update. Wrong release date. film = " + film);
-            throw new ValidationException("Дата релиза не может быть ранее " + DATE_OF_CINEMA);
-        }
+        isReleaseDateTooOld(film, "update");
 
         if (films.containsKey(film.getId())) {
             isFilmExists(film.getName(), film.getReleaseDate(), film.getId());
@@ -134,6 +128,20 @@ public class FilmController {
                         " already exists. excludeId = " + excludeId);
                 throw new ValidationException("Этот фильм уже указан.");
             }
+        }
+    }
+
+    /**
+     * Метод проверки даты выхода фильма, что она не ранее выхода самого первого
+     * фильма {@link FilmController#DATE_OF_CINEMA}.
+     * @param film проверяемый фильм
+     * @param actionName имя операции для записи в лог
+     * @throws ValidationException
+     */
+    private void isReleaseDateTooOld(Film film, String actionName) throws ValidationException {
+        if (film.getReleaseDate().isBefore(DATE_OF_CINEMA)) {
+            log.error("Film " + actionName + ". Wrong release date. film = " + film);
+            throw new ValidationException("Дата релиза не может быть ранее " + DATE_OF_CINEMA);
         }
     }
 }

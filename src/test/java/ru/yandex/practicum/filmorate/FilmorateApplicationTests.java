@@ -370,7 +370,7 @@ class FilmorateApplicationTests {
                 .id(0L)
                 .email("newuser3@email.com")
                 .login("newuser3")
-                .name("New user 3")
+                .name("")
                 .birthday(LocalDate.of(2013, 3, 3))
                 .build();
 
@@ -396,7 +396,7 @@ class FilmorateApplicationTests {
         assertTrue(parsedList.size() > 0, "Пользователи не добавлены.");
         assertTrue(parsedList.contains(user), "\"New user 1\" не добавлен.");
         assertTrue(parsedList.contains(user2), "\"New user 2\" не добавлен.");
-        assertTrue(parsedList.contains(user3), "\"New user 3\" не добавлен.");
+        assertTrue(parsedList.contains(user3), "\"newuser3\" не добавлен.");
     }
 
     @Test
