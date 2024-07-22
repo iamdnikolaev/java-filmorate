@@ -11,18 +11,21 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Адаптер типа LocalDate для обработки сериализации и десериализации поля даты}
- * @version 1.0
+ *
  * @author Николаев Д.В.
+ * @version 1.0
  */
 public class LocalDateTypeAdapter extends TypeAdapter<LocalDate> {
-    /** Поле используемого формата даты и времени */
+    /**
+     * Поле используемого формата даты и времени
+     */
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
      * Метод записи в формате JSON
      *
      * @param jsonWriter объект писателя
-     * @param localDate записываемое значение даты
+     * @param localDate  записываемое значение даты
      */
     @Override
     public void write(final JsonWriter jsonWriter, final LocalDate localDate) throws IOException {
