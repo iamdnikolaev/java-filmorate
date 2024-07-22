@@ -12,12 +12,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Пользователь сервиса.
  *
- * @version 1.0
  * @author Николаев Д.В.
+ * @version 1.0
  */
 @Getter
 @Setter
@@ -56,4 +57,9 @@ public class User {
      */
     @Past(message = "Дата рождения не может быть в будущем.")
     private LocalDate birthday;
+
+    /**
+     * Поле можества друзей.
+     */
+    private Set<Long> friendsUserId;
 }

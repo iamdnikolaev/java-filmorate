@@ -12,12 +12,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 /**
  * Фильм для коллекции.
  *
- * @version 1.0
  * @author Николаев Д.В.
+ * @version 1.0
  */
 @Getter
 @Setter
@@ -56,4 +57,9 @@ public class Film {
      */
     @Positive(message = "Продолжительность фильма должна быть положительным числом.")
     private Integer duration;
+
+    /**
+     * Поле оценок "нравится" с хранением id проголосовавших пользователей.
+     */
+    private Set<Long> likesUserId;
 }
