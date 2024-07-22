@@ -136,8 +136,8 @@ public class InMemoryFilmStorage implements FilmStorage {
         log.info("getPopularFilms. count = " + count);
         return films.values()
                 .stream()
-                .sorted((f0, f1) -> -1 * Integer.valueOf(f0.getLikesUserId() == null ? 0 : f0.getLikesUserId().size())
-                        .compareTo(Integer.valueOf(f1.getLikesUserId() == null ? 0 : f1.getLikesUserId().size())))
+                .sorted((f0, f1) -> -1 * Integer.compare(f0.getLikesUserId() == null ? 0
+                        : f0.getLikesUserId().size(), f1.getLikesUserId() == null ? 0 : f1.getLikesUserId().size()))
                 .limit(count)
                 .collect(Collectors.toList());
     }

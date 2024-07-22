@@ -150,7 +150,7 @@ public class FilmService {
      *
      * @param filmId проверяемый идентификатор фильма.
      */
-    void checkFilmId(long filmId) {
+    private void checkFilmId(long filmId) {
         log.info("checkFilmId. filmId = " + filmId);
 
         if (filmId == 0) {

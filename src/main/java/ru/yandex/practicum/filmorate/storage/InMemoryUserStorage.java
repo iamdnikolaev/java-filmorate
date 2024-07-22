@@ -92,8 +92,9 @@ public class InMemoryUserStorage implements UserStorage {
     /**
      * Метод добавления в друзья.
      *
-     * @param userId   пользователь, которому добавляется друг.
-     * @param friendId пользователь, добавляемый в друзья.
+     * @param userId      пользователь, которому добавляется друг.
+     * @param friendId    пользователь, добавляемый в друзья.
+     * @param isRecursive признак рекурсивного вызова для исключения зацикливания.
      * @return Список друзей пользователя userId.
      */
     @Override
@@ -117,8 +118,9 @@ public class InMemoryUserStorage implements UserStorage {
     /**
      * Метод удаления из друзей
      *
-     * @param userId   пользователь, который лишается друга.
-     * @param friendId пользователь, убираемый из друзей.
+     * @param userId      пользователь, который лишается друга.
+     * @param friendId    пользователь, убираемый из друзей.
+     * @param isRecursive признак рекурсивного вызова для исключения зацикливания.
      * @return Список друзей пользователя userId.
      */
     @Override
