@@ -88,14 +88,14 @@ public class FilmDbStorage extends BaseRepository<Film> implements FilmStorage {
     public Collection<Film> findAll() {
         log.info("Film findAll entering");
         Collection<Film> films = findMany(FIND_ALL_QUERY);
-        Map<Long, Rating> films_rating = jdbc.query(FIND_ALL_MPA, filmMpaExtractor);
-        Map<Long, HashSet<Long>> films_likes = jdbc.query(FIND_ALL_LIKES, filmLikesExtractor);
-        Map<Long, LinkedHashSet<Genre>> films_genres = jdbc.query(FIND_ALL_FILM_GENRES, filmGenresExtractor);
+        Map<Long, Rating> filmsRating = jdbc.query(FIND_ALL_MPA, filmMpaExtractor);
+        Map<Long, HashSet<Long>> filmsLikes = jdbc.query(FIND_ALL_LIKES, filmLikesExtractor);
+        Map<Long, LinkedHashSet<Genre>> filmsGenres = jdbc.query(FIND_ALL_FILM_GENRES, filmGenresExtractor);
         films = films.stream()
                 .map(film -> {
-                    film.setMpa(films_rating.get(film.getId()));
-                    film.setLikesUserId(films_likes.get(film.getId()));
-                    film.setGenres(films_genres.get(film.getId()));
+                    film.setMpa(filmsRating.get(film.getId()));
+                    film.setLikesUserId(filmsLikes.get(film.getId()));
+                    film.setGenres(filmsGenres.get(film.getId()));
                     return film;
                 })
                 .collect(Collectors.toList());
