@@ -67,10 +67,10 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
     public Collection<User> findAll() {
         log.info("User findAll entering.");
         Collection<User> users = findMany(FIND_ALL_QUERY);
-        Map<Long, Set<Long>> users_friends = jdbc.query(FIND_ALL_FRIENDS_ID, friendsExtractor);
+        Map<Long, Set<Long>> usersFriends = jdbc.query(FIND_ALL_FRIENDS_ID, friendsExtractor);
         users = users.stream()
                 .map(user -> {
-                    user.setFriendsUserId(users_friends.get(user.getId()));
+                    user.setFriendsUserId(usersFriends.get(user.getId()));
                     return user;
                 })
                 .collect(Collectors.toList());
@@ -235,15 +235,15 @@ public class UserDbStorage extends BaseRepository<User> implements UserStorage {
     private List<User> getFriendsOfFriends(List<User> friends) {
         log.info("User getCommonFriends. friends = " + friends);
         MapSqlParameterSource params = new MapSqlParameterSource();
-        Set<Long> friends_id = friends.stream()
+        Set<Long> friendsId = friends.stream()
                 .map(User::getId)
                 .collect(Collectors.toSet());
-        params.addValue("userIdSet", friends_id);
-        Map<Long, Set<Long>> users_friends = jdbc.query(FIND_ALL_FRIENDS_ID_BY_SET, params, friendsExtractor);
+        params.addValue("userIdSet", friendsId);
+        Map<Long, Set<Long>> usersFriends = jdbc.query(FIND_ALL_FRIENDS_ID_BY_SET, params, friendsExtractor);
 
         friends = friends.stream()
                 .map(friend -> {
-                    friend.setFriendsUserId(users_friends.get(friend.getId()));
+                    friend.setFriendsUserId(usersFriends.get(friend.getId()));
                     return friend;
                 })
                 .collect(Collectors.toList());
