@@ -34,14 +34,14 @@ public class FilmExtractor implements ResultSetExtractor<Film> {
             Timestamp releaseDate = rs.getTimestamp("release_date");
             film.setReleaseDate(releaseDate.toLocalDateTime().toLocalDate());
 
-            long rating_id = rs.getLong("rating_id");
-            if (rating_id > 0 && film.getMpa() == null) {
-                film.setMpa(new Rating(rating_id, rs.getString("rating_name")));
+            long ratingId = rs.getLong("rating_id");
+            if (ratingId > 0 && film.getMpa() == null) {
+                film.setMpa(new Rating(ratingId, rs.getString("rating_name")));
             }
 
-            long genre_id = rs.getLong("genre_id");
-            if (genre_id > 0) {
-                Genre genre = new Genre(genre_id, rs.getString("genre_name"));
+            long genreId = rs.getLong("genre_id");
+            if (genreId > 0) {
+                Genre genre = new Genre(genreId, rs.getString("genre_name"));
                 film.getGenres().add(genre);
             }
         }
