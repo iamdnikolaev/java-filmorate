@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -25,6 +26,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(of = {"login"})
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class User {
     /**
@@ -59,7 +61,7 @@ public class User {
     private LocalDate birthday;
 
     /**
-     * Поле можества друзей.
+     * Поле множества друзей.
      */
     private Set<Long> friendsUserId;
 }

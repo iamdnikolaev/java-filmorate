@@ -8,11 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * Фильм для коллекции.
@@ -25,6 +27,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(of = {"name", "releaseDate"})
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Film {
 
@@ -53,13 +56,24 @@ public class Film {
     private LocalDate releaseDate;
 
     /**
-     * Поле продолжительности.
+     * Поле продолжительности, в минутах.
      */
     @Positive(message = "Продолжительность фильма должна быть положительным числом.")
     private Integer duration;
 
     /**
+     * Рейтинг MPA
+     */
+    private Rating mpa;
+
+    /**
      * Поле оценок "нравится" с хранением id проголосовавших пользователей.
      */
-    private Set<Long> likesUserId;
+    private HashSet<Long> likesUserId;
+
+    /**
+     * Поле жанров фильма
+     */
+    private LinkedHashSet<Genre> genres;
+
 }
