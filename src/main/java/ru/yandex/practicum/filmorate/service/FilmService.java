@@ -6,12 +6,17 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.RatingStorage;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Сервис работы с фильмами {@link Film}
@@ -29,9 +34,19 @@ public class FilmService {
     public static final LocalDate DATE_OF_CINEMA = LocalDate.of(1895, 12, 28);
 
     /**
-     * Поле храналища фильмов.
+     * Поле репозитория фильмов.
      */
     private final FilmStorage filmStorage;
+
+    /**
+     * Поле репозитория жанров.
+     */
+    private final GenreStorage genreStorage;
+
+    /**
+     * Поле репозитория рейтингов.
+     */
+    private final RatingStorage ratingStorage;
 
     /**
      * Поле сервиса по работе с пользователями.
@@ -67,7 +82,9 @@ public class FilmService {
      */
     public Film create(Film newFilm) {
         isReleaseDateTooOld(newFilm, "create");
-        isFilmExists(newFilm.getName(), newFilm.getReleaseDate(), 0L);
+        //isFilmExists(newFilm.getName(), newFilm.getReleaseDate(), 0L); отключено, в тестах postman'а допустимы дубли
+        isRatingExists(newFilm.getMpa().getId());
+        isGenresExists(newFilm.getGenres());
 
         log.info("Film create. newFilm = " + newFilm);
         return filmStorage.create(newFilm);
@@ -85,6 +102,8 @@ public class FilmService {
             throw new ValidationException("Id должен быть указан.");
         }
         isReleaseDateTooOld(film, "update");
+        isRatingExists(film.getMpa().getId());
+        isGenresExists(film.getGenres());
 
         Collection<Film> films = filmStorage.findAll();
         Optional<Film> theFilm = films
@@ -93,7 +112,7 @@ public class FilmService {
                 .findFirst();
 
         if (theFilm.isPresent()) {
-            isFilmExists(film.getName(), film.getReleaseDate(), film.getId());
+            //isFilmExists(film.getName(), film.getReleaseDate(), film.getId());
 
             return filmStorage.update(film);
         }
@@ -181,6 +200,47 @@ public class FilmService {
                 log.error("isFilmExists. Film \"" + nameToFind + "\" with release date " + releaseDateToFind +
                         " already exists. excludeId = " + excludeId);
                 throw new ValidationException("Этот фильм уже указан.");
+            }
+        }
+    }
+
+    /**
+     * Метод проверки наличия указанного рейтинга в репозитории.
+     *
+     * @param idToFind id рейтинга для поиска
+     */
+    private void isRatingExists(long idToFind)
+            throws ValidationException {
+        if (idToFind > 0) {
+            Collection<Rating> ratings = ratingStorage.findAll();
+            Optional<Rating> ratingExists = ratings
+                    .stream()
+                    .filter(rating -> rating.getId() == idToFind)
+                    .findAny();
+            if (!ratingExists.isPresent()) {
+                log.error("isRatingExists. Rating with id = \"" + idToFind + " does not exist.");
+                throw new ValidationException("Этот указанный рейтинг не существует.");
+            }
+        }
+    }
+
+    /**
+     * Метод проверки наличия указанных жанров в репозитории.
+     *
+     * @param genresToFind множество жанров для проверки на существование
+     */
+    private void isGenresExists(Set<Genre> genresToFind)
+            throws ValidationException {
+        if (genresToFind != null && !genresToFind.isEmpty()) {
+            Collection<Genre> genresAll = genreStorage.findAll();
+            Optional<Genre> genreNotExists = genresToFind
+                    .stream()
+                    .filter(genreToFind -> !genresAll.contains(genreToFind))
+                    .findAny();
+
+            if (genreNotExists.isPresent()) {
+                log.error("isGenresExists. Genre \"" + genreNotExists + " does not exist.");
+                throw new ValidationException("Указанный жанр с id = " + genreNotExists.get().getId() + " не существует.");
             }
         }
     }

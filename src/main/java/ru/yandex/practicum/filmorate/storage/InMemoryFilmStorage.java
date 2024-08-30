@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -96,7 +95,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Long> addLike(long filmId, long userId) {
         log.info("Film addLike. filmId = " + filmId + ", userId = " + userId);
         Film film = films.get(filmId);
-        Set<Long> likes = film.getLikesUserId();
+        HashSet<Long> likes = film.getLikesUserId();
         if (likes == null) {
             likes = new HashSet<>();
             film.setLikesUserId(likes);
@@ -117,7 +116,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Long> deleteLike(long filmId, long userId) {
         log.info("Film deleteLike. filmId = " + filmId + ", userId = " + userId);
         Film film = films.get(filmId);
-        Set<Long> likes = film.getLikesUserId();
+        HashSet<Long> likes = film.getLikesUserId();
         if (likes != null && likes.contains(userId)) {
             likes.remove(userId);
         }
